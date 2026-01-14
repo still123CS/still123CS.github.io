@@ -5,6 +5,32 @@
     
     <entry>
       <title></title>
+      <link href="/2026/01/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/"/>
+      <url>/2026/01/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p>@[toc]</p><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>redis缓存最佳实践问题，开发中常见的思路流程。</p><h2 id="查询缓存部分"><a href="#查询缓存部分" class="headerlink" title="查询缓存部分"></a>查询缓存部分</h2><p>先查询缓存，存在则返回数据，不存在则查询数据库，写入缓存，返回数据</p><h2 id="更新缓存部分"><a href="#更新缓存部分" class="headerlink" title="更新缓存部分"></a>更新缓存部分</h2><p>先更新数据库，再删除缓存（等用户再来查询时在重建缓存，避免大量的无效更新缓存操作）</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title></title>
+      <link href="/2026/01/14/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/"/>
+      <url>/2026/01/14/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p>@[toc]</p><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>在高并发的场景下常常会出现一些问题，开发中会常常见到</p><h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><p>问题：客户端请求的数据在缓存和数据库中都不存在，缓存永远不会生效，这些请求都会打到数据库<br>解决：1.缓存空对象，对不存在的数据建立个缓存，值为空。<br>2.布隆过滤器（实现有点复杂），布隆算法有时也不会太准。<br>3.做好格式校验，权限校验。</p><h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><p>问题：这是由于大量的key在同一个时间同时消失之后大量请求因为查询不到缓存而全部打到Mysql数据库里。，redis服务器崩了<br>解决：这个可以直接用随机ttl给每个key随机设置过期时间;分布式集群redis,哨兵模式等等。。。</p><h2 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h2><p>问题：这是由于热点key在重建缓存时（重建缓存过程有点慢），大量请求打入数据库。<br>解决：最简单的直接用互斥锁setnx，保证在重建缓存的时候只有一个线程在执行。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title></title>
       <link href="/2025/12/26/redis%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
       <url>/2025/12/26/redis%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
       
