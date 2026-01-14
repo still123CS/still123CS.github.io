@@ -4,39 +4,19 @@
   
     
     <entry>
-      <title></title>
-      <link href="/2026/01/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/"/>
-      <url>/2026/01/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/</url>
+      <title>redis 缓存问题</title>
+      <link href="/2025/12/14/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/"/>
+      <url>/2025/12/14/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/</url>
       
-        <content type="html"><![CDATA[<p>title: redis 缓存最佳实践问题</p><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>redis缓存最佳实践问题，开发中常见的思路流程。</p><h2 id="查询缓存部分"><a href="#查询缓存部分" class="headerlink" title="查询缓存部分"></a>查询缓存部分</h2><p>先查询缓存，存在则返回数据，不存在则查询数据库，写入缓存，返回数据</p><h2 id="更新缓存部分"><a href="#更新缓存部分" class="headerlink" title="更新缓存部分"></a>更新缓存部分</h2><p>先更新数据库，再删除缓存（等用户再来查询时在重建缓存，避免大量的无效更新缓存操作）</p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title></title>
-      <link href="/2026/01/14/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/"/>
-      <url>/2026/01/14/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/</url>
-      
-        <content type="html"><![CDATA[<p>title: redis缓存问题</p><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>在高并发的场景下常常会出现一些问题，开发中会常常见到</p><h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><p>问题：客户端请求的数据在缓存和数据库中都不存在，缓存永远不会生效，这些请求都会打到数据库<br>解决：1.缓存空对象，对不存在的数据建立个缓存，值为空。<br>2.布隆过滤器（实现有点复杂），布隆算法有时也不会太准。<br>3.做好格式校验，权限校验。</p><h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><p>问题：这是由于大量的key在同一个时间同时消失之后大量请求因为查询不到缓存而全部打到Mysql数据库里。，redis服务器崩了<br>解决：这个可以直接用随机ttl给每个key随机设置过期时间;分布式集群redis,哨兵模式等等。。。</p><h2 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h2><p>问题：这是由于热点key在重建缓存时（重建缓存过程有点慢），大量请求打入数据库。<br>解决：最简单的直接用互斥锁setnx，保证在重建缓存的时候只有一个线程在执行。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>在高并发的场景下常常会出现一些问题，开发中会常常见到</p><h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><p>问题：客户端请求的数据在缓存和数据库中都不存在，缓存永远不会生效，这些请求都会打到数据库<br>解决：1.缓存空对象，对不存在的数据建立个缓存，值为空。<br>2.布隆过滤器（实现有点复杂），布隆算法有时也不会太准。<br>3.做好格式校验，权限校验。</p><h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><p>问题：这是由于大量的key在同一个时间同时消失之后大量请求因为查询不到缓存而全部打到Mysql数据库里。，redis服务器崩了<br>解决：这个可以直接用随机ttl给每个key随机设置过期时间;分布式集群redis,哨兵模式等等。。。</p><h2 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h2><p>问题：这是由于热点key在重建缓存时（重建缓存过程有点慢），大量请求打入数据库。<br>解决：最简单的直接用互斥锁setnx，保证在重建缓存的时候只有一个线程在执行。</p>]]></content>
       
       
       
-    </entry>
-    
-    
-    
-    <entry>
-      <title></title>
-      <link href="/2025/12/26/redis%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-      <url>/2025/12/26/redis%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
-      
-        <content type="html"><![CDATA[<p>前言：<br>redis是一个非常常用的中间件，内存存储的原因使其响应速度相比MySQL快了很多，有非常多的适配场景，用途大致如下。</p><p>1.使用其kv属性存储用户登录数据，进行校验，权限认证。既保证共享性，同时响应速度也很可观。<br>2.利用redis的zset数据结构，可以实现排行榜功能<br>3.同时可以通过set数据结构，判断该用户是否完成了一个用户只能完成一次的操作（比如点赞功能）<br>4.通过setnx命令功能，实现互斥锁，避免多线程高并发造成的数据错读，缓存不一致的现象。</p>]]></content>
-      
-      
+        <tags>
+            
+            <tag> Spring,事务 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -48,6 +28,44 @@
       <url>/2025/12/14/%E4%BA%8B%E5%8A%A1%E5%A4%B1%E6%95%88%E7%9A%84%E6%83%85%E5%86%B5/</url>
       
         <content type="html"><![CDATA[<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>做事务逻辑的时候有几个常见的坑，在开发的时候一定要避免！</p><h2 id="1-非public修饰的方法"><a href="#1-非public修饰的方法" class="headerlink" title="1.非public修饰的方法"></a>1.非public修饰的方法</h2><p>这个比较简单不容易出错。</p><h2 id="2-同一个内的方法调用"><a href="#2-同一个内的方法调用" class="headerlink" title="2.同一个内的方法调用"></a>2.同一个内的方法调用</h2><p>需要注入自身代理对象来调用。</p><h2 id="3-非spring容器管理的bean-或者是new出来的对象"><a href="#3-非spring容器管理的bean-或者是new出来的对象" class="headerlink" title="3.非spring容器管理的bean,或者是new出来的对象"></a>3.非spring容器管理的bean,或者是new出来的对象</h2><p>这个方面也不太容易出错，多注意就行。</p><h2 id="4-异常捕获但未抛出，或抛出非指定的异常"><a href="#4-异常捕获但未抛出，或抛出非指定的异常" class="headerlink" title="4.异常捕获但未抛出，或抛出非指定的异常"></a>4.异常捕获但未抛出，或抛出非指定的异常</h2><p>Spring 事务的回滚逻辑依赖未被捕获的异常：若事务方法内捕获了异常且未重新抛出，事务管理器无法感知异常，会默认提交事务。<br>解决办法：1.抛出指定异常。<br>                  2.配置在Transactional后rollbackFor&#x3D;指定异常。</p><h2 id="技术细节"><a href="#技术细节" class="headerlink" title="技术细节"></a>技术细节</h2><p>日志排查：开启 Spring 事务日志，查看是否有 “Creating transaction”“Rolling back transaction” 日志：</p><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>事务失效的核心是代理未生效或异常未被感知<br>排查时优先检查：<br>1.方法是否为 public；<br>2.是否同类内部调用；<br>3.类是否被 Spring 管理；<br>4.异常是否被捕获 &#x2F; 抛出类型是否匹配；</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Spring,事务 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>redis常见的使用</title>
+      <link href="/2025/12/14/redis%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+      <url>/2025/12/14/redis%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
+      
+        <content type="html"><![CDATA[<p>前言：<br>redis是一个非常常用的中间件，内存存储的原因使其响应速度相比MySQL快了很多，有非常多的适配场景，用途大致如下。</p><p>1.使用其kv属性存储用户登录数据，进行校验，权限认证。既保证共享性，同时响应速度也很可观。<br>2.利用redis的zset数据结构，可以实现排行榜功能<br>3.同时可以通过set数据结构，判断该用户是否完成了一个用户只能完成一次的操作（比如点赞功能）<br>4.通过setnx命令功能，实现互斥锁，避免多线程高并发造成的数据错读，缓存不一致的现象。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Spring,事务 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>redis 缓存最佳实践问题</title>
+      <link href="/2025/12/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/"/>
+      <url>/2025/12/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>redis缓存最佳实践问题，开发中常见的思路流程。</p><h2 id="查询缓存部分"><a href="#查询缓存部分" class="headerlink" title="查询缓存部分"></a>查询缓存部分</h2><p>先查询缓存，存在则返回数据，不存在则查询数据库，写入缓存，返回数据</p><h2 id="更新缓存部分"><a href="#更新缓存部分" class="headerlink" title="更新缓存部分"></a>更新缓存部分</h2><p>先更新数据库，再删除缓存（等用户再来查询时在重建缓存，避免大量的无效更新缓存操作）</p>]]></content>
       
       
       
