@@ -11,10 +11,16 @@
         <content type="html"><![CDATA[<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>电商项目常见的并发条件下库存超卖和一人一单问题</p><h2 id="库存超卖"><a href="#库存超卖" class="headerlink" title="库存超卖"></a>库存超卖</h2><p>问题：在并发环境下，简单的通过判断库存是否&gt;0将会造成超卖现象，比如一个商品的库存是50，在一瞬间内有100个线程抢购一个商品，此时进行库存是否充足判断时商品的库存均&gt;0,但实际跑完后，库存数量将会变为-50。<br>解决：可以通过两种方法：悲观锁和乐观锁。<br>悲观锁：一个线程获取锁后，其他线程等待锁释放才能继续往下执行。<br>乐观锁：其实就是没锁，所有的线程均可访问资源，只需要在更新数据库时加个条件查询下当时库存是否&gt;0。（cas比较交换，读取当前值并记录，在更新时检查该值是否改变，如果一样，修改成功，如果不一样，自旋重试。容易造成的问题：ABA问题和自旋所造成的cpu消耗）</p><h2 id="一人一单"><a href="#一人一单" class="headerlink" title="一人一单"></a>一人一单</h2><p>问题：一个人可以下多个单，造成不公平的现象。<br>解决：单服务器下对操作逻辑加上synchronized锁，并加上userId对象，作为不同的资源。在多服务器集群下可以用redis集群实现分布式锁（直接用redission框架）。</p><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>库存超卖和一人一单的解决思路不仅仅局限于这两个问题，多种并发问题都可类似解决。</p>]]></content>
       
       
+      <categories>
+          
+          <category> 锁 </category>
+          
+      </categories>
+      
       
         <tags>
             
-            <tag> redis </tag>
+            <tag> 锁 </tag>
             
         </tags>
       
@@ -29,6 +35,37 @@
       
         <content type="html"><![CDATA[<p>前言：<br>redis是一个非常常用的中间件，内存存储的原因使其响应速度相比MySQL快了很多，有非常多的适配场景，用途大致如下。</p><p>1.使用其kv属性存储用户登录数据，进行校验，权限认证。既保证共享性，同时响应速度也很可观。<br>2.利用redis的zset数据结构，可以实现排行榜功能<br>3.同时可以通过set数据结构，判断该用户是否完成了一个用户只能完成一次的操作（比如点赞功能）<br>4.通过setnx命令功能，实现互斥锁，避免多线程高并发造成的数据错读，缓存不一致的现象。</p>]]></content>
       
+      
+      <categories>
+          
+          <category> redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> redis </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>redis 缓存最佳实践问题</title>
+      <link href="/2026/01/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/"/>
+      <url>/2026/01/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>redis缓存最佳实践问题，开发中常见的思路流程。</p><h2 id="查询缓存部分"><a href="#查询缓存部分" class="headerlink" title="查询缓存部分"></a>查询缓存部分</h2><p>先查询缓存，存在则返回数据，不存在则查询数据库，写入缓存，返回数据</p><h2 id="更新缓存部分"><a href="#更新缓存部分" class="headerlink" title="更新缓存部分"></a>更新缓存部分</h2><p>先更新数据库，再删除缓存（等用户再来查询时在重建缓存，避免大量的无效更新缓存操作）</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> redis </category>
+          
+      </categories>
       
       
         <tags>
@@ -61,31 +98,18 @@
     
     
     <entry>
-      <title>redis 缓存最佳实践问题</title>
-      <link href="/2026/01/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/"/>
-      <url>/2026/01/14/redis%E7%BC%93%E5%AD%98%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E9%97%AE%E9%A2%98/</url>
-      
-        <content type="html"><![CDATA[<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>redis缓存最佳实践问题，开发中常见的思路流程。</p><h2 id="查询缓存部分"><a href="#查询缓存部分" class="headerlink" title="查询缓存部分"></a>查询缓存部分</h2><p>先查询缓存，存在则返回数据，不存在则查询数据库，写入缓存，返回数据</p><h2 id="更新缓存部分"><a href="#更新缓存部分" class="headerlink" title="更新缓存部分"></a>更新缓存部分</h2><p>先更新数据库，再删除缓存（等用户再来查询时在重建缓存，避免大量的无效更新缓存操作）</p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>事务失效的情况</title>
       <link href="/2025/12/14/%E4%BA%8B%E5%8A%A1%E5%A4%B1%E6%95%88%E7%9A%84%E6%83%85%E5%86%B5/"/>
       <url>/2025/12/14/%E4%BA%8B%E5%8A%A1%E5%A4%B1%E6%95%88%E7%9A%84%E6%83%85%E5%86%B5/</url>
       
         <content type="html"><![CDATA[<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>做事务逻辑的时候有几个常见的坑，在开发的时候一定要避免！</p><h2 id="1-非public修饰的方法"><a href="#1-非public修饰的方法" class="headerlink" title="1.非public修饰的方法"></a>1.非public修饰的方法</h2><p>这个比较简单不容易出错。</p><h2 id="2-同一个内的方法调用"><a href="#2-同一个内的方法调用" class="headerlink" title="2.同一个内的方法调用"></a>2.同一个内的方法调用</h2><p>需要注入自身代理对象来调用。</p><h2 id="3-非spring容器管理的bean-或者是new出来的对象"><a href="#3-非spring容器管理的bean-或者是new出来的对象" class="headerlink" title="3.非spring容器管理的bean,或者是new出来的对象"></a>3.非spring容器管理的bean,或者是new出来的对象</h2><p>这个方面也不太容易出错，多注意就行。</p><h2 id="4-异常捕获但未抛出，或抛出非指定的异常"><a href="#4-异常捕获但未抛出，或抛出非指定的异常" class="headerlink" title="4.异常捕获但未抛出，或抛出非指定的异常"></a>4.异常捕获但未抛出，或抛出非指定的异常</h2><p>Spring 事务的回滚逻辑依赖未被捕获的异常：若事务方法内捕获了异常且未重新抛出，事务管理器无法感知异常，会默认提交事务。<br>解决办法：1.抛出指定异常。<br>                  2.配置在Transactional后rollbackFor&#x3D;指定异常。</p><h2 id="技术细节"><a href="#技术细节" class="headerlink" title="技术细节"></a>技术细节</h2><p>日志排查：开启 Spring 事务日志，查看是否有 “Creating transaction”“Rolling back transaction” 日志：</p><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>事务失效的核心是代理未生效或异常未被感知<br>排查时优先检查：<br>1.方法是否为 public；<br>2.是否同类内部调用；<br>3.类是否被 Spring 管理；<br>4.异常是否被捕获 &#x2F; 抛出类型是否匹配；</p>]]></content>
       
+      
+      <categories>
+          
+          <category> 事务 </category>
+          
+      </categories>
       
       
         <tags>
